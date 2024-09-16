@@ -9,7 +9,7 @@ on:
   # workflow_dispatch:
 
 env:
-  AWS_REGION: us-east-1f # TODO: Does this need the f? 
+  AWS_REGION: us-east-1 # TODO: Does this need the f? 
   AWS_INSTANCE_SG_ID: ${{ secrets.AWS_SECRTITY_GROUP_ID }}
 # permissions:
 #   contents: read
