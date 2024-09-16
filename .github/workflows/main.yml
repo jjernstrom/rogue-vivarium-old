@@ -39,5 +39,6 @@ jobs:
           role-session-name: EC2-Deployment
 
       - name: Deploy with rsync
-        run: sudo rsync -v ./ ${{ secrets.DEST }}
+        run: echo < pwd
+        # run: sudo rsync -v ./ ${{ secrets.DEST }}
 
