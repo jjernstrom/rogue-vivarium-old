@@ -9,10 +9,13 @@ on:
   # workflow_dispatch:
 
 env:
-  AWS_REGION: us-east-1 # TODO: Does this need the f? 
+  AWS_REGION: us-east-1
   AWS_INSTANCE_SG_ID: ${{ secrets.AWS_SECRTITY_GROUP_ID }}
-# permissions:
-#   contents: read
+
+# Enable action to create JWT for AWS credentials
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
   deploy:
@@ -28,36 +31,43 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+      # - name: Configure AWS credentials
+      #   uses: aws-actions/configure-aws-credentials@v1
+      #   with:
+      #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     aws-secret-access-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      #     aws-region: ${{ env.AWS_REGION }}
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.SSH_PRIVATE_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
+          aws-region: $env.AWS_REGION
+          role-to-assume: arn:aws:iam::445567072000:role/OIDC-GitHub--EC2-deployment
+          role-session-name: EC2-Deployment
 
-      - name: Get runner ip address
-        id: ip
-        uses: haythem/public-ip@v1.3
+      # - name: Get runner ip address
+      #   id: ip
+      #   uses: haythem/public-ip@v1.3
 
-      - name: Whitelist runner ip address
-        run: |
-          aws ec2 authorize-security-group-ingress \
-            --group-id $AWS_INSTANCE_SG_ID \
-            --protocol tcp \
-            --port 22 \
-            --cidr ${{ steps.ip.outputs.ipv4 }}/32
+      # - name: Whitelist runner ip address
+      #   run: |
+      #     aws ec2 authorize-security-group-ingress \
+      #       --group-id $AWS_INSTANCE_SG_ID \
+      #       --protocol tcp \
+      #       --port 22 \
+      #       --cidr ${{ steps.ip.outputs.ipv4 }}/32
 
       - name: Copy repo to EC2 instance
         run: |
           touch test
       
-      - name: revoke runner ip address
-        run: |
-          aws ec2 revoke-security-group-ingress \
-            --group-id $AWS_INSTANCE_SG_ID \
-            --protocol tcp \
-            --port 22 \
-            --cidr ${{ steps.ip.outputs.ipv4 }}/32
+      # - name: revoke runner ip address
+      #   run: |
+      #     aws ec2 revoke-security-group-ingress \
+      #       --group-id $AWS_INSTANCE_SG_ID \
+      #       --protocol tcp \
+      #       --port 22 \
+      #       --cidr ${{ steps.ip.outputs.ipv4 }}/32
           
 
     #   - name: Login to Amazon 
