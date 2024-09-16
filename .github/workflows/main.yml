@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: amazon-linux
+
+    strategy:
+      matrix:
+        node-version: [22.x]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - run: npm ci
+      - run: npm run build
+      - run: npm run test
+
+      - name: rsync deployments
+      - uses: burnett01/rsync-deployments@5.1
+        with:
+          switches: -avzr --delete
+          path: ./*
+          remote_path: /var/www/jjernstrom/
+          remote_host: ec2-18-207-136-229.compute-1.amazonaws.com
+          remote_user: ec2-user
+          remote_key: "${{ secrets.SSH_PRIVATE_KEY }}"
+      
+    # - uses: actions/checkout@v4
+    # - name: Use Node.js ${{ matrix.node-version }}
+    #   uses: actions/setup-node@v4
+    #   with:
+    #     node-version: ${{ matrix.node-version }}
+    #     cache: 'npm'
+    # - run: npm ci
+    # - run: npm run build
+    # - run: npm test
