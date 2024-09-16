@@ -37,7 +37,7 @@ jobs:
 
       - name: Get runner ip address
         id: ip
-        uses: heythem/public-ip@1.2
+        uses: haythem/public-ip@v1.3
 
       - name: Whitelist runner ip address
         run: |
