@@ -39,5 +39,5 @@ jobs:
           role-session-name: EC2-Deployment
 
       - name: Deploy with rsync
-        run: sudo rsync -avz ./dist/frontend/my-app ${{ secrets.DEST }}
+        run: sudo rsync -avz ./ ${{ secrets.DEST }}
 
