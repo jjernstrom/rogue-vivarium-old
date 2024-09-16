@@ -9,7 +9,7 @@ on:
 jobs:
   build:
 
-    runs-on: amazon-linux
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
