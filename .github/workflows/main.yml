@@ -3,12 +3,16 @@ name: CI
 on:
   push:
     branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
-env:
-  AWS_REGION: us-east-1f # TODO: Does this need the f? 
+  workflow_dispatch:
 
-permissions:
-  contents: read
+# env:
+#   AWS_REGION: us-east-1f # TODO: Does this need the f? 
+
+# permissions:
+#   contents: read
 
 jobs:
   deploy:
