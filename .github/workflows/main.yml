@@ -40,7 +40,7 @@ jobs:
 
       - name: Deploy with rsync
         run: |
-          ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} \
+          ssh -tt ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} \
           && pwd
       #   uses: burnett01/rsync-deployments@7.0.1
       #   with:
