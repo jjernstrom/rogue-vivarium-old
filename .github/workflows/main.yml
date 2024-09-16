@@ -1,4 +1,4 @@
-name: CI
+name: CD
 
 on:
   push:
@@ -38,49 +38,6 @@ jobs:
           role-to-assume: arn:aws:iam::445567072000:role/OIDC-GitHub--EC2-deployment
           role-session-name: EC2-Deployment
 
-      # - name: Get runner ip address
-      #   id: ip
-      #   uses: haythem/public-ip@v1.3
+      - name: Deploy with rsync
+        run: sudo rsync -avz ./dist/frontend/my-app ${{ secrets.DEST }}
 
-      # - name: Whitelist runner ip address
-      #   run: |
-      #     aws ec2 authorize-security-group-ingress \
-      #       --group-id $AWS_INSTANCE_SG_ID \
-      #       --protocol tcp \
-      #       --port 22 \
-      #       --cidr ${{ steps.ip.outputs.ipv4 }}/32
-
-      - name: Copy repo to EC2 instance
-        run: |
-          touch test
-      
-      # - name: revoke runner ip address
-      #   run: |
-      #     aws ec2 revoke-security-group-ingress \
-      #       --group-id $AWS_INSTANCE_SG_ID \
-      #       --protocol tcp \
-      #       --port 22 \
-      #       --cidr ${{ steps.ip.outputs.ipv4 }}/32
-          
-
-    #   - name: Login to Amazon 
-
-      # - name: rsync deployments
-      #   uses: burnett01/rsync-deployments@5.1
-      #   with:
-      #     switches: -avzr --delete
-      #     path: ./*
-      #     remote_path: /var/www/jjernstrom/
-      #     remote_host: ec2-18-207-136-229.compute-1.amazonaws.com
-      #     remote_user: ec2-user
-      #     remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
-      
-    # - uses: actions/checkout@v4
-    # - name: Use Node.js ${{ matrix.node-version }}
-    #   uses: actions/setup-node@v4
-    #   with:
-    #     node-version: ${{ matrix.node-version }}
-    #     cache: 'npm'
-    # - run: npm ci
-    # - run: npm run build
-    # - run: npm test
