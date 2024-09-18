@@ -1,12 +1,8 @@
-name: CD
+name: Production Deployment
 
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
-
-  workflow_dispatch:
 
 env:
   AWS_REGION: us-east-1
@@ -23,10 +19,6 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
 
-    # strategy:
-    #   matrix:
-    #     node-version: [22.x]
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -35,18 +27,9 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: us-east-1
-          role-to-assume: arn:aws:iam::445567072000:role/OIDC-GitHub--EC2-deployment
-          role-session-name: EC2-Deployment
+          role-to-assume: $ {{ secrets.PROD_DEPLOY_ROLE }}
+          role-session-name: OIDCSession
 
-      - name: Deploy with rsync
-        run: |
-          ssh -tt ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} \
-          && pwd
-      #   uses: burnett01/rsync-deployments@7.0.1
-      #   with:
-      #     switches: -avzr --delete
-      #     path: ''
-      #     remote_path: ${{ secrets.REMOTE_DEST }}
-      #     remote_host: ${{ secrets.REMOTE_HOST }}
-      #     remote_user: ${{ secrets.REMOTE_USER }}
-      #     remote_key: ''
+      - name: Deploy to S3 Production
+        run: aws s3 cp /* s3://jjernstrom-s3-prod
+        
