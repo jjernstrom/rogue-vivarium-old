@@ -4,10 +4,6 @@ on:
   push:
     branches: [ main ]
 
-env:
-  AWS_REGION: us-east-1
-  AWS_INSTANCE_SG_ID: ${{ secrets.AWS_SECRTITY_GROUP_ID }}
-
 # Enable action to create JWT for AWS credentials
 permissions:
   id-token: write
@@ -38,4 +34,3 @@ jobs:
 
       - name: Deploy to S3 Production
         run: aws s3 cp Frontend/my-app/app-dev.tar s3://jjernstrom-s3-prod/app-dev.tar
-        
