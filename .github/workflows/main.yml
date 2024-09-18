@@ -31,5 +31,5 @@ jobs:
           role-session-name: OIDCSession
 
       - name: Deploy to S3 Production
-        run: aws s3 cp ./ s3://jjernstrom-s3-prod/
+        run: aws s3 cp / s3://jjernstrom-s3-prod/
         
