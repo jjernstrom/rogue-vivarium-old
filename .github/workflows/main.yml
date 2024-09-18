@@ -32,8 +32,8 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          cd Frontend/my-app \
-          docker build -t app:dev . \
+          cd Frontend/my-app && \
+          docker build -t app:dev . && \
           docker save -o app-dev.tar app:dev 
 
       - name: Deploy to S3 Production
