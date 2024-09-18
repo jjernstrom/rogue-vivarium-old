@@ -30,6 +30,12 @@ jobs:
           role-to-assume: ${{ secrets.PROD_DEPLOY_ROLE }}
           role-session-name: OIDCSession
 
+      - name: Build Docker Image
+        run: |
+          cd Frontend/my-app \
+          docker build -t app:dev . \
+          docker save -o app-dev.tar app:dev 
+
       - name: Deploy to S3 Production
-        run: aws s3 cp Frontend/my-app/public s3://jjernstrom-s3-prod/ --recursive
+        run: aws s3 cp Frontend/my-app/app-dev.tar s3://jjernstrom-s3-prod/app-dev.tar
         
