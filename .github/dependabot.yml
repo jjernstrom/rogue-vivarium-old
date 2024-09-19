@@ -1,12 +1,11 @@
-# TODO: Change directory after #22
-
 version: 2
 updates:
   - package-ecosystem: "npm"
+    directory: "/"
     schedule:
       interval: "weekly"
 
   - package-ecosystem: "docker"
-    directory: "/Frontend/my-app/"
+    directory: "/"
     schedule:
       interval: "weekly"
