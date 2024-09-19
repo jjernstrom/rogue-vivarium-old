@@ -1,5 +1,5 @@
 import { Stage } from '@pixi/react';
-import { Player } from '../Player';
+import { Player } from './Player';
 import { Vector } from '../types';
 
 
