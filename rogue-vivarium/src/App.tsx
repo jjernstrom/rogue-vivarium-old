@@ -1,5 +1,5 @@
 import { AppProvider, PageContainer, PageContainerToolbar } from "@toolpad/core";
-import { Game } from "./Game";
+import { Game } from "./components";
 
 const PageToolbar = () => {
   return (

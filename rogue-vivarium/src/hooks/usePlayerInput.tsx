@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Vector } from "../types";
+import { Vector } from "@types";
 
 const movementDelta = 5;
 

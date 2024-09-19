@@ -1,6 +1,6 @@
 import { Stage } from '@pixi/react';
 import { Player } from './Player';
-import { Vector } from '../types';
+import { Vector } from '@/types';
 
 
 const stageSize: Vector = {x: 1280, y:720};

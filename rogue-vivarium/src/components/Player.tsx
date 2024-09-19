@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Sprite } from "@pixi/react";
-import { usePlayerInput } from '@hooks';
 import { Vector } from "@types";
+import { usePlayerInput } from "../hooks"; // TODO: Why can't I use the path mapping?
 
 const bunnyUrl = 'https://pixijs.io/pixi-react/img/bunny.png';
 
