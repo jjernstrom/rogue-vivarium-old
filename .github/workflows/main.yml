@@ -29,8 +29,8 @@ jobs:
       - name: Build Docker Image
         run: |
           cd rogue-vivarium && \
-          docker build -t rogueVivarium:dev . && \
-          docker save -o rogueVivarium-dev.tar rogueVivarium:dev 
+          docker build -t rogue-vivarium:dev . && \
+          docker save -o rogue-vivarium-dev.tar rogue-vivarium:dev 
 
       - name: Deploy to S3 Production
-        run: aws s3 cp rogue-vivarium/rogueVivarium-dev.tar s3://jjernstrom-s3-prod/rogueVivarium-dev.tar
+        run: aws s3 cp rogue-vivarium/rogue-vivarium-dev.tar s3://jjernstrom-s3-prod/rogue-vivarium-dev.tar
