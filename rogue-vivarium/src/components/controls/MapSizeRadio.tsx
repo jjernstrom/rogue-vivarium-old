@@ -10,7 +10,6 @@ interface Props {
 export const MapSizeRadio = ({setMapSize, setStageSize, setTileSize}: Props) => {
   
   const handleMapSizeChange = (event: React.ChangeEvent<HTMLInputElement>, value: string) => {
-    //setMapSize((event.target as HTMLInputElement).value);
     switch (value) {
       case "high":
         setMapSize({x:1200, y:600});
@@ -35,7 +34,7 @@ export const MapSizeRadio = ({setMapSize, setStageSize, setTileSize}: Props) => 
   return (
     <FormControl>
         <FormLabel>Resolution</FormLabel>
-        <RadioGroup onChange={handleMapSizeChange}>
+        <RadioGroup onChange={handleMapSizeChange} defaultValue='low'>
           <FormControlLabel value="high" control={<Radio />} label="High: 1200 x 600" />
           <FormControlLabel value="med" control={<Radio />} label="Med: 600 x 300" />
           <FormControlLabel value="low" control={<Radio />} label="Low: 300 x 150" />

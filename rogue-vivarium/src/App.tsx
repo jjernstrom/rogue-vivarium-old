@@ -24,8 +24,8 @@ const App = () => {
   const [frequency, setFrequency] = useState<number>(0.1);
   const [gradientGridSize, setGradientGridSize] = useState<number>(255);
   const [tileSize, setTileSize] = useState<number>(5);
-  const [mapSize, setMapSize] = useState<Vector>({x: 100, y: 100});
-  const [stageSize, setStageSize] = useState<Vector>({x:1000, y:500});
+  const [mapSize, setMapSize] = useState<Vector>({x:300, y:600});
+  const [stageSize, setStageSize] = useState<Vector>({x:1200, y:600});
   
   const [waterLevel, setWaterLevel] = useState<number>(25);
  
