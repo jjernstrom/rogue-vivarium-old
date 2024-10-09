@@ -1,7 +1,7 @@
 import { Container, DisplayObject, Graphics } from "pixi.js";
 import { PerlinTile, TileMap } from "./types";
 import { Vector } from "@/types";
-import { generateRandomGradientVectors, perlinNoise2d } from "./CreateMap";
+import { generateGradientVectorGrid, perlinNoise2d } from "./CreateMap";
 
 const white = 0xFFFFFF;
 const black = 0x000000;
@@ -44,27 +44,52 @@ export const renderPerlinMap = (map: PerlinMap , container: Container<DisplayObj
   })
 }
 
-export const renderPerlinTerrain = (container: Container<DisplayObject>) => {
-  const size: Vector = {x:100, y:100};
-  const seed = generateRandomGradientVectors({x: size.x + 2, y: size.y + 2}); 
 
-  for(let x = 0; x < size.x; ++x) {
-    for(let y = 0; y < size.y; ++y) {
+
+interface Args {
+  frequency: number,
+  mapSize: Vector,
+  gradientGridSize: number,
+  tileSize: number,
+  waterLevel: number
+}
+
+export const renderPerlinTerrain = (container: Container<DisplayObject>, {frequency=0.1, mapSize, gradientGridSize=255, tileSize=5, waterLevel}: Args) => {
+  const colorEarthMap = (height: number) => {
+    const gray = '#d7dbdd';
+    const green = '#52be80';
+    const darkGreen = '#1e8449';
+    const sand = '#f9e79f';
+    const blue = '#f9e79f';
+    const darkBlue = '#21618c';
+    
+    const scale = 50;
+  
+    if (height - waterLevel + scale > 75) return white;
+    else if (height - waterLevel + scale > 68) return gray;
+    else if (height - waterLevel + scale > 55) return darkGreen;
+    else if (height - waterLevel + scale > 45) return green;
+    else if (height - waterLevel + scale > 40) return sand;
+    else if (height - waterLevel + scale > 35) return blue;
+    else return darkBlue;
+  
+  }
+  
+  const gradientVectorGrid = generateGradientVectorGrid(gradientGridSize); 
+
+  for(let x = 0; x < mapSize.x; ++x) {
+    for(let y = 0; y < mapSize.y; ++y) {
       const tile = new Graphics()
-      //const value = Math.floor(Math.abs(perlinNoise2d(x, y, seed)) / 1000000 * 255);
       
-      const scale = 0.1;
-
-      const value = perlinNoise2d(x, y, seed);
-      const value2 = Math.abs(value) / 1000000;
-      const value3 =  Math.floor(value2 * 255) + 10;
+      const value = perlinNoise2d(x * frequency, y * frequency, gradientVectorGrid);
+      const value2 = Math.floor(Math.abs(value) * 255);
+      const value3 = Math.floor(Math.abs(value * 100))
       
-      tile.beginFill({r: value3, g: value3, b: value3});
-      tile.drawRect(x*tileSize, y*tileSize, tileSize, tileSize);
+      //tile.beginFill({r: value2, g: value2, b: value2});
+      tile.beginFill(colorEarthMap(value3));
+      tile.drawRect(x * tileSize, y * tileSize, tileSize, tileSize);
       
       container.addChild(tile);
-      console.log(value3);
-      
     }
   }
 

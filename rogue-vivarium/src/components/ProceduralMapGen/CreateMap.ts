@@ -23,34 +23,42 @@ export const generateMapWithPureNoise = (size: Vector) => {
 
 
 const dotProduct = (a: Vector, b: Vector) => {
-  return a.x * b.x + a.y * b.y ? a.x * b.x + a.y * b.y : 0;
+  return a.x * b.x + a.y * b.y; 
 }
 
-const dotProductGrid = (input: Vector, directionVector: Vector, seed: Vector[][]): number => {
-  // TODO: update fallback case to non-zero
-  let gradientVector = seed[directionVector.x][directionVector.y] ? 
-    seed[directionVector.x][directionVector.y] : {x:0, y:0};
-  
-  return dotProduct(directionVector, gradientVector);
+const dotProductGrid = (input: Vector, grid: Vector, gradientVectorGrid: Vector[][]): number => {
+  const offsetVector: Vector = {x: input.x - grid.x, y: input.y - grid.y};
+ 
+  const gradientVector: Vector = gradientVectorGrid[grid.x][grid.y];
+
+  return dotProduct(gradientVector, offsetVector);
 }
 
 // x is the scale factor between a and b
-const linearInterpolation = (x: number, a: number, b: number):number => {
+const linearInterpolationWithSmooth = (x: number, a: number, b: number):number => {
+  return a + smootherstep(x) * (b-a);
+}
+
+const linearInterpolation= (x: number, a: number, b: number):number => {
   return a + x * (b-a);
 }
 
-export const generateRandomGradientVectors = (size: Vector) => {
+const smootherstep = (x: number) => {
+  return 6*x**5 - 15*x**4 + 10*x**3;
+}
+
+export const generateGradientVectorGrid = (size: number) => {
   let vectors = [];
 
-  const getRandGradVect = () => {
+  const generateRandomGradientVector = () => {
     const theta = Math.random() * 2 * Math.PI;
     return {x: Math.cos(theta), y: Math.sin(theta)};
   }
 
-  for (let x = 0; x < size.x; ++x) {
+  for (let x = 0; x < size; ++x) {
     let row = [];
-    for (let y = 0; y < size.y; ++y) {
-      row.push(getRandGradVect());
+    for (let y = 0; y < size; ++y) {
+      row.push(generateRandomGradientVector());
     }
     vectors.push(row);
   }
@@ -58,22 +66,26 @@ export const generateRandomGradientVectors = (size: Vector) => {
   return vectors;
 }
 
-export const perlinNoise2d = (x:number, y:number, seed: Vector[][]):number => {
+export const perlinNoise2d = (xInput:number, yInput:number, gradientVectorGrid: Vector[][]):number => {
   
-  const x0: number = x === 0 ? 0 : x - 1;
-  const x1: number = x === 100 ? 100 : 0;
-  const y0: number = y === 0 ? 0 : y - 1;
-  const y1: number = y === 100 ? 100 : y + 1;
+  const X: number = Math.floor(xInput);
+  const Y: number = Math.floor(yInput);
   
-  const topLeft = dotProductGrid({x:x, y:y}, {x:x0, y:y0}, seed)
-  const topRight = dotProductGrid({x:x, y:y}, {x:x1, y:y0}, seed)
-  const bottomLeft = dotProductGrid({x:x, y:y}, {x:x0, y:y1}, seed)
-  const bottomRight = dotProductGrid({x:x, y:y}, {x:x1, y:y1}, seed)
+  // Gradient Vector Grid local node x y
+  const x0: number = X 
+  const x1: number = X + 1
+  const y0: number = Y
+  const y1: number = Y + 1
   
-  const xTop = linearInterpolation(x - x1, topLeft, topRight)
-  const xBottom = linearInterpolation(x - x1, bottomLeft, bottomRight)
+  const topLeft = dotProductGrid({x:xInput, y:yInput}, {x:x0, y:y0}, gradientVectorGrid)
+  const topRight = dotProductGrid({x:xInput, y:yInput}, {x:x1, y:y0}, gradientVectorGrid)
+  const bottomLeft = dotProductGrid({x:xInput, y:yInput}, {x:x0, y:y1}, gradientVectorGrid)
+  const bottomRight = dotProductGrid({x:xInput, y:yInput}, {x:x1, y:y1}, gradientVectorGrid)
+  
+  const xTop = linearInterpolationWithSmooth(xInput - x0, topLeft, topRight)
+  const xBottom = linearInterpolationWithSmooth(xInput - x0, bottomLeft, bottomRight)
 
-  const intensity = linearInterpolation(x - x1, xTop, xBottom)
+  const intensity = linearInterpolationWithSmooth(yInput - y0, xTop, xBottom)
 
   return intensity;
 }
@@ -81,7 +93,7 @@ export const perlinNoise2d = (x:number, y:number, seed: Vector[][]):number => {
 
 export const generateMapWithPerlinNoise = (size: Vector) => {
   const tiles: PerlinTile[][] = [];
-  const seed = generateRandomGradientVectors({x: size.x + 2, y: size.y + 2}); 
+  const seed = generateGradientVectorGrid(size.x); 
 
   for(let x = 0; x < size.x; ++x) {
     const row: PerlinTile[] = [];

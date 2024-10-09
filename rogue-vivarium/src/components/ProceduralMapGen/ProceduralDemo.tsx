@@ -6,15 +6,31 @@ import { generateMapWithPerlinNoise, generateMapWithPureNoise } from "./CreateMa
 import { TileMap } from "./types";
 import { renderMap, renderPerlinMap, renderPerlinTerrain } from "./RenderMap";
 
-const cave = generateMapWithPureNoise({x: 100, y: 100});
-const perlinCave = generateMapWithPerlinNoise({x:100, y:100})
+//const cave = generateMapWithPureNoise({x: 100, y: 100});
+//const perlinCave = generateMapWithPerlinNoise({x:100, y:100})
+interface Args {
+  frequency: number,
+  mapSize: Vector,
+  gradientGridSize: number,
+  tileSize: number,
+  waterLevel: number,
+}
 
-const run = (app: Application<ICanvas>) => {
+interface Props {
+  frequency: number,
+  mapSize: Vector,
+  gradientGridSize: number,
+  tileSize: number,
+  waterLevel: number,
+  generate: boolean,
+}
+ 
+const run = (app: Application<ICanvas>, props:Args) => {
   const container = new Container();
   app.stage.addChild(container);
   
   //renderPerlinMap(perlinCave, container);
-  renderPerlinTerrain(container);
+  renderPerlinTerrain(container, {frequency: props.frequency, mapSize: props.mapSize, gradientGridSize: props.gradientGridSize, tileSize: props.tileSize, waterLevel: props.waterLevel});
   
       // // Move container to the center
       // container.x = app.screen.width / 2;
@@ -31,13 +47,13 @@ const run = (app: Application<ICanvas>) => {
 }
 
 
-export const ProceduralDemo = () => {
+export const ProceduralDemo = ({generate, ...props}: Props) => {
   let app = useApp();
   
   useEffect(() => {
     app.stage.removeChildren();
-    run(app);
-  }, [app]);
+    run(app, props);
+  }, [app, generate]);
   
   return (
     <>

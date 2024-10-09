@@ -61,7 +61,7 @@ export const MapAnimation = () => {
     return (
         // <AppProvider value={app}>
             <Stage height={100} width={100}>
-            <ProceduralDemo />
+            {/* <ProceduralDemo /> */}
             </Stage>
         // </AppProvider>
     );
