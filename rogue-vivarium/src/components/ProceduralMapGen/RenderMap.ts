@@ -54,7 +54,7 @@ interface Args {
   waterLevel: number
 }
 
-export const renderPerlinTerrain = (container: Container<DisplayObject>, {frequency=0.1, mapSize, gradientGridSize=255, tileSize=5, waterLevel}: Args) => {
+export const renderPerlinTerrain = (container: Container<DisplayObject>, {frequency, mapSize, gradientGridSize=255, tileSize, waterLevel}: Args) => {
   const colorEarthMap = (height: number) => {
     const gray = '#d7dbdd';
     const green = '#52be80';
